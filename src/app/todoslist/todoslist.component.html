@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="row">
+      <section class="content">
+          <div class="col-md-8 col-md-offset-2">
+              <h1>List of Players</h1>
+              <div class="panel panel-default">
+                  <input type="text" name="search" class="form-control" placeholder="Search" [(ngModel)]="searchData">
+                  <div class="panel-body">
+                      <div class="pull-right">
+                      </div>
+                      <div *ngIf="todosDetail.length <= 0" [ngStyle]="{'text-align': 'center','color': 'red'}">
+                          No Todo Available
+                      </div>
+                      <div class="table-resposive" [hidden]="!todosDetail.length > 0">
+                          <table class="table table-filter">
+                              <tbody>
+                                  <tr *ngFor="let todosList of ( todosDetail | filterTodos | searchBy : searchData ); let i = index">
+                                      <td>
+                                          {{i + 1}}
+                                      </td>
+                                      <td>
+                                      </td>
+                                      <td [routerLink]="['/todosDetail', i + 1]" >
+                                          <div class="media"  >
+                                              <h4 class="title">
+                                                  {{todosList?.firstName | muUppercase}} 
+                                                  {{todosList?.lastName}} 
+                                                  Born on {{todosList?.dob | date :'shortDate' }}
+                                              </h4>
+
+                                              
+                                          </div>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+      </section>
+  </div>
+</div>
