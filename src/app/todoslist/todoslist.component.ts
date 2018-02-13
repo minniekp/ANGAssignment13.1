@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ITodoList } from '../interface/interface1';
 import { TodosService } from '../todos.service';
+import { Observable } from "rxjs/Observable";
 
 @Component({
   selector: 'app-todoslist',
@@ -9,7 +10,8 @@ import { TodosService } from '../todos.service';
 })
 export class TodoslistComponent implements OnInit {
 
-  todosDetail: ITodoList[];
+  // todosDetail: ITodoList[];
+  todosDetail: Observable<ITodoList[]>;
 
   /** Using constructor, call the todosService.
        this shorthand syntax automatically creates and
@@ -24,7 +26,4 @@ export class TodoslistComponent implements OnInit {
     this.searchData = '';
     this.todosDetail = this.todosService.getTodoList();
   };
-
-  
-
 }

@@ -14,10 +14,20 @@ import { MyUpperCasePipe } from './my-upper-case.pipe';
 import { FilterTodosPipe } from './filter-todos.pipe';
 import { TodosService } from './todos.service';
 import { TodoDropdownService } from './todo-dropdown.service';
+import { LoginComponent } from './login/login.component';
+import { AuthGuardComponent } from './auth-guard';
+import { DeactivateGuardService } from './deactivate-guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'todos', pathMatch: 'full'},
-  { path: 'todos', component: TodosComponent },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'todos', component: TodosComponent, canActivate: [AuthGuardComponent],
+    data: {
+      message: 'Add a Todo'
+    },
+    resolve: { todoType : TodoTypeResolveService }
+  },
   { path: 'todosList', component: TodoslistComponent },
   { path: 'taskDetal/:id', component: TaskdetalComponent },
   { path: '**', component: PagenotfoundComponent }
@@ -34,7 +44,8 @@ const routes: Routes = [
     TaskdetalComponent,
     PagenotfoundComponent,
     MyUpperCasePipe,
-    FilterTodosPipe
+    FilterTodosPipe,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +54,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes)
     
   ],
-  providers: [TodoDropdownService],
+  providers: [TodoDropdownService, AuthGuardComponent, DeactivateGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

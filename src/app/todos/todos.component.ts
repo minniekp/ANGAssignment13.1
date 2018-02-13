@@ -3,10 +3,15 @@ import { TodosService } from '../todos.service';
 import { TodoDropdownService } from '../todo-dropdown.service';
 import { ITodoList } from '../interface/interface1';
 import { ITodoType } from '../interface/interface2';
-import { Router } from '@angular/router';
 import { CommonFunction } from '../common';
 import { MyUpperCasePipe } from '../my-upper-case.pipe';
 import { FilterTodosPipe } from '../filter-todos.pipe';
+import { Observable } from 'rxjs/observable';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Headers } from '@angular/http';
+import { Http } from '@angular/http';
+
+
 
 declare const alertify: any;
 
@@ -20,20 +25,28 @@ export class TodosComponent implements OnInit {
 
   /**Public variable */
   todosArray: ITodoList[] = [];
-  todoType: ITodoType[] = [];
+  todoType: Observable<ITodoType[]>;
 
   private searchData: string;
+  title: string = '';
   todosModel: ITodoList;
   todosDetail: ITodoList;
 
   /** Using constructor, call the todoService.
      this shorthand syntax automatically creates and
     initializes a new private member in the class */
-  constructor(private todoService: TodosService, private todoDropDown: TodoDropdownService, private router: Router) { }
+  constructor(private todoService: TodosService, 
+              private todoDropDown: TodoDropdownService, 
+              private route: Router,
+              private router: ActivatedRoute,
+              private http: Http) { }
 
   ngOnInit() {
     this.todoModel();
-    this.todoType = this.todoDropDown.getTodoType();
+    this.router.data.forEach((data: any) => {
+      this.title = data.message;
+      this.todoType = data.todoType;
+    });
   }
 
   todoModel() {
@@ -56,13 +69,21 @@ export class TodosComponent implements OnInit {
     };
 
     /**Call function from service. */
-    this.todoService.addTodo(this.todosDetail);
+    this.todoService.addTodo(this.todosDetail).subscribe(data =>{;
 
     /**Using 3rd party library to show message. */
-    alertify.notify('Cricketer Added Successfully', 'success', 3);
+    alertify.notify('Todo Added Successfully', 'success', 3);
 
     /**Redirecting page to todosList */
-    this.router.navigate(['/todoslist']);
+    this.route.navigate(['/todoslist']);
+    })
+  };
+
+  canDeactivate() {
+    if (this.todosModel.firstName !== '') {
+      return window.confirm('Are you sure you dont want to save the data?');
+    }
+    return true;
   };
 
 }
